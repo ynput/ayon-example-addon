@@ -1,0 +1,2 @@
+Example server addon
+====================

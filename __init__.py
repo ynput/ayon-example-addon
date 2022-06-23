@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Any, Type
 
 from fastapi import Depends
 from pydantic import Field
@@ -13,16 +13,18 @@ from openpype.settings import BaseSettingsModel
 # from openpype.api.dependencies import dep_current_user
 
 
-class TestSettings(BaseSettingsModel):
+class ExampleSettings(BaseSettingsModel):
     """Test addon settings"""
 
     folder_type: str = Field("Asset", title="Folder type")
 
 
-class AddOn(BaseServerAddon):
+class ExampleAddon(BaseServerAddon):
+    name = "example"
+    title = "Example addon"
     version = "1.0.0"
-    settings: Type[TestSettings] = TestSettings
-    frontend_scopes = ["project"]
+    settings_model: Type[ExampleSettings] = ExampleSettings
+    frontend_scopes: dict[str, Any] = {"project": {}}
 
     def setup(self):
         self.add_endpoint(
