@@ -15,7 +15,7 @@ html, body {
   width: 800px;
   max-height: 600px;
   background: rgba(0, 0, 0, 0.5);
-  overflow: scroll;  I am a project-level test addon frontend
+  overflow: scroll;
 }
 
     </style>
@@ -24,10 +24,16 @@ html, body {
     <h1>Test addon</h1>
 
     <p>
-    My dear parent told me to use the following context:
+      I am a test addon written in vanilla javascript
+      invoked in project <span id='project-name'></span>.
     </p>
 
-    <pre id="ctxwnd"></pre>
+
+    <p>
+      Select something in the sidebar (which is not a part of the addon)
+      <ul id='selection'>
+      </ul>
+    </p>
 
   </body>
 
@@ -36,7 +42,16 @@ html, body {
     document.addEventListener('DOMContentLoaded', () => {
 
       window.onmessage = (e) => {
-        document.querySelector('#ctxwnd').innerHTML = JSON.stringify(e.data, null, 2);
+        const context = e.data.context
+        document.querySelector('#project-name').innerHTML = context.projectName
+        //document.querySelector('#ctxwnd').innerHTML = JSON.stringify(context, null, 2);
+
+        let selectionList = ""
+        for (const folderId of context.focusedFolders){
+          selectionList += `<li>${folderId}</li>\n`
+        }
+        document.querySelector('#selection').innerHTML = selectionList
+
       }
 
     })
