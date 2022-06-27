@@ -4,13 +4,12 @@ from fastapi import Depends
 from pydantic import Field
 
 from openpype.addons import BaseServerAddon
-from openpype.api.dependencies import dep_project_name
-from openpype.entities import FolderEntity
+from openpype.api.dependencies import dep_project_name, dep_current_user
+from openpype.entities import FolderEntity, UserEntity
 from openpype.exceptions import NotFoundException
 from openpype.lib.postgres import Postgres
 from openpype.settings import BaseSettingsModel
 
-# from openpype.api.dependencies import dep_current_user
 
 
 class ExampleSettings(BaseSettingsModel):
@@ -24,28 +23,27 @@ class ExampleAddon(BaseServerAddon):
     title = "Example addon"
     version = "1.0.0"
     settings_model: Type[ExampleSettings] = ExampleSettings
-    frontend_scopes: dict[str, Any] = {"project": {}}
+    frontend_scopes: dict[str, Any] = {"project": {"sidebar": "hierarchy"}}
 
     def setup(self):
         self.add_endpoint(
-            "get-random-asset/{project_name}",
-            self.get_random_asset,
+            "get-random-folder/{project_name}",
+            self.get_random_folder,
             method="GET",
         )
 
-    async def get_random_asset(
+    async def get_random_folder(
         self,
-        # Uncomment this to disallow anonymous access
-        # user: UserEntity = Depends(dep_current_user),
+        user: UserEntity = Depends(dep_current_user),
         project_name: str = Depends(dep_project_name),
     ):
-        """Return a random asset from the database"""
+        """Return a random folder from the database"""
 
         settings = await self.get_project_settings(project_name)
         assert settings is not None  # Keep mypy happy
 
         #
-        # Get a random asset id from the project
+        # Get a random folder id from the project
         #
 
         try:
@@ -63,10 +61,10 @@ class ExampleAddon(BaseServerAddon):
         try:
             folder_id = result[0]["id"]
         except IndexError:
-            raise NotFoundException("No assets found")
+            raise NotFoundException("No folder found")
 
         #
-        # Load the asset and return it
+        # Load the folder and return it
         #
 
         folder = await FolderEntity.load(project_name, folder_id)
