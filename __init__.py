@@ -20,7 +20,7 @@ class ExampleAddon(BaseServerAddon):
     # frontend_scopes defines, where the web frontend of the addon
     # should be displayed in openpype web app. Currently only "project"
     # is supported. Additional arguments may be passed (in this case)
-    # to show the project hierarchy sidebar. This feature is not yet 
+    # to show the project hierarchy sidebar. This feature is not yet
     # fully functional and will be changed in the future.
 
     frontend_scopes: dict[str, Any] = {"project": {"sidebar": "hierarchy"}}

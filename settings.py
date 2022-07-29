@@ -1,7 +1,9 @@
 from typing import Literal
-from pydantic import Field
-from openpype.settings import BaseSettingsModel
+
+from pydantic import Field, validator
+
 from openpype.lib.postgres import Postgres
+from openpype.settings import BaseSettingsModel, ensure_unique_names, normalize_name
 
 
 async def async_enum_resolver():
@@ -9,7 +11,7 @@ async def async_enum_resolver():
     return [row["name"] async for row in Postgres.iterate("SELECT name FROM projects")]
 
 
-class ExampleSettingsSubmodel(BaseSettingsModel):
+class CompactListSubmodel(BaseSettingsModel):
 
     # Compact layout is used, when a submodel has just a few
     # attributes, which may be displayed in a single row
@@ -22,6 +24,26 @@ class ExampleSettingsSubmodel(BaseSettingsModel):
         title="Enum",
         enum_resolver=lambda: ["foo", "bar", "baz"],
     )
+
+    @validator("name")
+    def validate_name(cls, value):
+        """Ensure name does not contain weird characters"""
+        return normalize_name(value)
+
+
+class DictLikeSubmodel(BaseSettingsModel):
+    _layout = "expanded"
+
+    name: str = Field(..., title="Name")
+    value1: str = Field("", title="Value 1")
+    value2: str = Field("", title="Value 2")
+    value3: str = Field("", title="Value 3")
+    value4: str = Field("", title="Value 4")
+
+    @validator("name")
+    def validate_name(cls, value):
+        """Ensure name does not contain weird characters"""
+        return normalize_name(value)
 
 
 class ExampleSettings(BaseSettingsModel):
@@ -72,7 +94,17 @@ class ExampleSettings(BaseSettingsModel):
 
     # Settings models can be nested
 
-    list_of_submodels: list[ExampleSettingsSubmodel] = Field(
+    list_of_submodels: list[CompactListSubmodel] = Field(
         default_factory=list,
         title="A list of compact objects",
     )
+
+    dict_like_list: list[DictLikeSubmodel] = Field(
+        default_factory=list, title="Dict-like list"
+    )
+
+    @validator("list_of_submodels", "dict_like_list")
+    def ensure_unique_names(cls, value):
+        """Ensure name fields within the lists have unique names."""
+        ensure_unique_names(value)
+        return value
