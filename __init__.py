@@ -1,21 +1,14 @@
 from typing import Any, Type
 
 from fastapi import Depends
-from pydantic import Field
 
 from openpype.addons import BaseServerAddon
-from openpype.api.dependencies import dep_project_name, dep_current_user
+from openpype.api.dependencies import dep_current_user, dep_project_name
 from openpype.entities import FolderEntity, UserEntity
 from openpype.exceptions import NotFoundException
 from openpype.lib.postgres import Postgres
-from openpype.settings import BaseSettingsModel
 
-
-
-class ExampleSettings(BaseSettingsModel):
-    """Test addon settings"""
-
-    folder_type: str = Field("Asset", title="Folder type")
+from .settings import ExampleSettings
 
 
 class ExampleAddon(BaseServerAddon):
@@ -23,7 +16,17 @@ class ExampleAddon(BaseServerAddon):
     title = "Example addon"
     version = "1.0.0"
     settings_model: Type[ExampleSettings] = ExampleSettings
+
+    # frontend_scopes defines, where the web frontend of the addon
+    # should be displayed in openpype web app. Currently only "project"
+    # is supported. Additional arguments may be passed (in this case)
+    # to show the project hierarchy sidebar. This feature is not yet 
+    # fully functional and will be changed in the future.
+
     frontend_scopes: dict[str, Any] = {"project": {"sidebar": "hierarchy"}}
+
+    # Setup method is called during the addon initialization
+    # You can use it to register its custom REST endpoints
 
     def setup(self):
         self.add_endpoint(
@@ -31,6 +34,9 @@ class ExampleAddon(BaseServerAddon):
             self.get_random_folder,
             method="GET",
         )
+
+    # Example REST endpoint
+    # Depends(dep_current_user) ensures the request is authenticated
 
     async def get_random_folder(
         self,
@@ -42,10 +48,7 @@ class ExampleAddon(BaseServerAddon):
         settings = await self.get_project_settings(project_name)
         assert settings is not None  # Keep mypy happy
 
-        #
         # Get a random folder id from the project
-        #
-
         try:
             result = await Postgres.fetch(
                 f"""
@@ -63,14 +66,15 @@ class ExampleAddon(BaseServerAddon):
         except IndexError:
             raise NotFoundException("No folder found")
 
-        #
-        # Load the folder and return it
-        #
+        # Load the folder entity
 
         folder = await FolderEntity.load(project_name, folder_id)
-        return folder.payload
 
-        # Optionally you can use:
-        #
-        # folder.ensure_read_access(user)
-        # return folder.as_user(user)
+        # ensure_read_access method raises ForbiddenException, when the user
+        # does not have rights to view the folder.
+
+        folder.ensure_read_access(user)
+
+        # FolderEntity.as_user returns the folder (similarly to folder.payload)
+        # but it respects the user access level (so it may hide certain attributes)
+        return folder.as_user(user)
