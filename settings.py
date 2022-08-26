@@ -11,6 +11,23 @@ async def async_enum_resolver():
     return [row["name"] async for row in Postgres.iterate("SELECT name FROM projects")]
 
 
+class NestedSettings(BaseSettingsModel):
+    spam: bool = Field(False, title="Spam")
+    eggs: bool = Field(False, title="Eggs")
+    bacon: bool = Field(False, title="Bacon")
+
+
+class GroupedSettings(BaseSettingsModel):
+    _isGroup = True
+    your_name: str = Field("", title="Name")
+    your_quest: str = Field("", title="Your quest")
+    favorite_color: str = Field(
+        "red",
+        title="Favorite color",
+        enum_resolver=lambda: ["red", "green", "blue"],
+    )
+
+
 class CompactListSubmodel(BaseSettingsModel):
 
     # Compact layout is used, when a submodel has just a few
@@ -62,7 +79,7 @@ class ExampleSettings(BaseSettingsModel):
     # Simple enumerators can be defined using Literal type
 
     simple_enum: Literal["red", "green", "blue"] = Field(
-        "foo",
+        "red",
         title="Simple enum",
     )
 
@@ -94,13 +111,26 @@ class ExampleSettings(BaseSettingsModel):
 
     # Settings models can be nested
 
+    nested_settings: NestedSettings = Field(
+        default_factory=NestedSettings,
+        title="Nested settings",
+        description="Nested settings submodel without grouping",
+    )
+
+    grouped_settings: GroupedSettings = Field(
+        default_factory=GroupedSettings,
+        title="Grouped settings",
+        description="Nested settings submodel with grouping",
+    )
+
     list_of_submodels: list[CompactListSubmodel] = Field(
         default_factory=list,
         title="A list of compact objects",
     )
 
     dict_like_list: list[DictLikeSubmodel] = Field(
-        default_factory=list, title="Dict-like list"
+        default_factory=list,
+        title="Dict-like list",
     )
 
     @validator("list_of_submodels", "dict_like_list")
