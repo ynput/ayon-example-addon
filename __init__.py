@@ -24,6 +24,9 @@ class ExampleAddon(BaseServerAddon):
     # fully functional and will be changed in the future.
 
     frontend_scopes: dict[str, Any] = {"project": {"sidebar": "hierarchy"}}
+    services = {
+        "SplinesReticulator" : {"image": "bfirsh/reticulate-splines"}
+    }
 
     # Setup method is called during the addon initialization
     # You can use it to register its custom REST endpoints
