@@ -11,7 +11,26 @@ async def async_enum_resolver():
     return [row["name"] async for row in Postgres.iterate("SELECT name FROM projects")]
 
 
+def enum_resolver():
+    """Return a list of value/label dicts for the enumerator.
+
+    Returning a list of dicts is used to allow for a custom label to be
+    displayed in the UI.
+    """
+    return [{"value": f"value{i}", "label": f"Label {i}"} for i in range(10)]
+
+
 class NestedSettings(BaseSettingsModel):
+    """Nested settings without grouping
+
+    Submodels also support docstrings, which are propagated
+    to the frontend. Just be aware a description attribute on
+    the parent field will override the docstring.
+
+    Docstring can be splitted to multiple paragraph simply
+    by adding an empty line.
+    """
+
     spam: bool = Field(False, title="Spam")
     eggs: bool = Field(False, title="Eggs")
     bacon: bool = Field(False, title="Bacon")
@@ -69,11 +88,22 @@ class ExampleSettings(BaseSettingsModel):
     folder_type: str = Field(
         "Asset",
         title="Folder type",
+        description="""Type of the folder the addon operates on. 
+        It can be any type of folder. Refer to the project anatomy for complete list.
+        """
     )
     textarea: str = Field(
         "",
         title="Textarea",
         widget="textarea",
+    )
+
+    number: int = Field(
+        1,
+        title="Number",
+        description="Positive integer 1-10",
+        gt=0,  # greater than
+        le=10,  # less or equal
     )
 
     # Simple enumerators can be defined using Literal type
@@ -101,7 +131,16 @@ class ExampleSettings(BaseSettingsModel):
     multiselect: list[str] = Field(
         default_factory=list,
         title="Multiselect",
-        enum_resolver=lambda: ["foo", "bar", "baz"],
+        enum_resolver=lambda: ["foo", "bar", "ba"],
+    )
+
+    # Enumerators can be defined using a list of dicts, where
+    # each dict has "value" and "label" keys
+
+    enum_with_labels: str = Field(
+        "value1",
+        title="Enum with labels",
+        enum_resolver=enum_resolver,
     )
 
     list_of_strings: list[str] = Field(
@@ -114,7 +153,6 @@ class ExampleSettings(BaseSettingsModel):
     nested_settings: NestedSettings = Field(
         default_factory=NestedSettings,
         title="Nested settings",
-        description="Nested settings submodel without grouping",
     )
 
     grouped_settings: GroupedSettings = Field(
