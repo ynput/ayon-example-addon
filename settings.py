@@ -20,6 +20,31 @@ def enum_resolver():
     return [{"value": f"value{i}", "label": f"Label {i}"} for i in range(10)]
 
 
+class ConditionalModel1(BaseSettingsModel):
+    _layout = "compact"
+    something: str = Field("", description="Something")
+
+
+class ConditionalModel2(BaseSettingsModel):
+    _layout = "compact"
+    something_else: str = Field("", description="Something else")
+    something_else_number: int = Field(0, description="Something else's number")
+
+
+class ConditionalModel3(BaseSettingsModel):
+    _title = "Something completely different"
+    key1: str = Field("", description="Key 1")
+    key2: str = Field("", description="Key 2")
+    key3: str = Field("", description="Key 3")
+
+
+model_switcher_enum = [
+    {"value": "model1", "label": "Something"},
+    {"value": "model2", "label": "Something else"},
+    {"value": "model3", "label": "Something completely different"},
+]
+
+
 class NestedSettings(BaseSettingsModel):
     """Nested settings without grouping
 
@@ -34,6 +59,19 @@ class NestedSettings(BaseSettingsModel):
     spam: bool = Field(False, title="Spam")
     eggs: bool = Field(False, title="Eggs")
     bacon: bool = Field(False, title="Bacon")
+
+    model_switcher: str = Field(
+        "",
+        title="Model switcher",
+        description="Switch between two models",
+        enum_resolver=lambda: model_switcher_enum,
+        conditionalEnum=True,
+        section="Pseudo-dynamic models",
+    )
+
+    model1: ConditionalModel1 = Field(default_factory=ConditionalModel1)
+    model2: ConditionalModel2 = Field(default_factory=ConditionalModel2)
+    model3: ConditionalModel3 = Field(default_factory=ConditionalModel3)
 
 
 class GroupedSettings(BaseSettingsModel):
@@ -88,9 +126,9 @@ class ExampleSettings(BaseSettingsModel):
     folder_type: str = Field(
         "Asset",
         title="Folder type",
-        description="""Type of the folder the addon operates on. 
+        description="""Type of the folder the addon operates on.
         It can be any type of folder. Refer to the project anatomy for complete list.
-        """
+        """,
     )
     textarea: str = Field(
         "",
@@ -106,11 +144,28 @@ class ExampleSettings(BaseSettingsModel):
         le=10,  # less or equal
     )
 
+    # Scoped fields are shown only in specific context (studio/project)
+
+    studio_setting: str = Field(
+        "",
+        title="Studio setting",
+        scope="studio",
+        description="This setting is only visible in studio scope",
+    )
+
+    project_setting: str = Field(
+        "",
+        title="Project setting",
+        scope="project",
+        description="This setting is only visible in project scope",
+    )
+
     # Simple enumerators can be defined using Literal type
 
     simple_enum: Literal["red", "green", "blue"] = Field(
         "red",
         title="Simple enum",
+        section="Enumerators",
     )
 
     # For more complex enumerators, use enum_resolver function
@@ -125,7 +180,6 @@ class ExampleSettings(BaseSettingsModel):
         None,
         enum_resolver=async_enum_resolver,
         title="Dynamic enum",
-        section="Advanced types",
     )
 
     multiselect: list[str] = Field(
@@ -133,7 +187,6 @@ class ExampleSettings(BaseSettingsModel):
         title="Multiselect",
         enum_resolver=lambda: ["foo", "bar", "ba"],
     )
-
     # Enumerators can be defined using a list of dicts, where
     # each dict has "value" and "label" keys
 
@@ -146,6 +199,7 @@ class ExampleSettings(BaseSettingsModel):
     list_of_strings: list[str] = Field(
         default_factory=list,
         title="List of strings",
+        section="List",
     )
 
     # Settings models can be nested

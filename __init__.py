@@ -1,8 +1,9 @@
 from typing import Any, Type
 
 from fastapi import Depends
+from nxtools import logging
 
-from openpype.addons import BaseServerAddon
+from openpype.addons import BaseServerAddon, AddonLibrary
 from openpype.api.dependencies import dep_current_user, dep_project_name
 from openpype.entities import FolderEntity, UserEntity
 from openpype.exceptions import NotFoundException
@@ -24,19 +25,23 @@ class ExampleAddon(BaseServerAddon):
     # fully functional and will be changed in the future.
 
     frontend_scopes: dict[str, Any] = {"project": {"sidebar": "hierarchy"}}
-    services = {
-        "SplinesReticulator" : {"image": "bfirsh/reticulate-splines"}
-    }
+    services = {"SplinesReticulator": {"image": "bfirsh/reticulate-splines"}}
 
-    # Setup method is called during the addon initialization
+    # intitalize method is called during the addon initialization
     # You can use it to register its custom REST endpoints
 
-    def setup(self):
+    def intitialize(self):
         self.add_endpoint(
             "get-random-folder/{project_name}",
             self.get_random_folder,
             method="GET",
         )
+
+    def setup(self):
+        """Setup method is called after the addon is registered"""
+        logging.info("Example addon is ready to use")
+        all_addons: list[str] = [name for name, _ in AddonLibrary.items()]
+        logging.info(f"All addons as example addons sees them: {all_addons}")
 
     # Example REST endpoint
     # Depends(dep_current_user) ensures the request is authenticated
