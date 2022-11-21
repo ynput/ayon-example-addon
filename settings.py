@@ -121,7 +121,19 @@ class DictLikeSubmodel(BaseSettingsModel):
 
 
 class ExampleSettings(BaseSettingsModel):
-    """Test addon settings"""
+    """Test addon settings.
+
+
+    This is a test addon settings. It is used to test various
+    features of the settings system.
+
+    Docstrings are propagated to the frontend, so you can use
+    them to describe your settings, submodels and their fields.
+
+    On the frontend, docstrings are rendered as markdown, so you
+    can use markdown syntax to format your descriptions, e.g.:
+    **bold** , *italic* , `code`, [links](https://openpype.io)...
+    """
 
     folder_type: str = Field(
         "Asset",

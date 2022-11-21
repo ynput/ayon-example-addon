@@ -30,7 +30,8 @@ class ExampleAddon(BaseServerAddon):
     # intitalize method is called during the addon initialization
     # You can use it to register its custom REST endpoints
 
-    def intitialize(self):
+    def initialize(self):
+        logging.info("Example addon INIT")
         self.add_endpoint(
             "get-random-folder/{project_name}",
             self.get_random_folder,
