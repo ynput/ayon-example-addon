@@ -141,11 +141,13 @@ class ExampleSettings(BaseSettingsModel):
         description="""Type of the folder the addon operates on.
         It can be any type of folder. Refer to the project anatomy for complete list.
         """,
+        placeholder="Placeholder of the folder type field",
     )
     textarea: str = Field(
         "",
         title="Textarea",
         widget="textarea",
+        placeholder="Placeholder of the textarea field",
     )
 
     number: int = Field(
@@ -154,6 +156,7 @@ class ExampleSettings(BaseSettingsModel):
         description="Positive integer 1-10",
         gt=0,  # greater than
         le=10,  # less or equal
+        placeholder="Placeholder of the number field",
     )
 
     # Scoped fields are shown only in specific context (studio/project)
