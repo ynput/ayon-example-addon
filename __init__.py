@@ -38,11 +38,14 @@ class ExampleAddon(BaseServerAddon):
             method="GET",
         )
 
-    def setup(self):
+    async def setup(self):
         """Setup method is called after the addon is registered"""
         logging.info("Example addon is ready to use")
         all_addons: list[str] = [name for name, _ in AddonLibrary.items()]
         logging.info(f"All addons as example addons sees them: {all_addons}")
+
+        # self.request_server_restart()
+
 
     # Example REST endpoint
     # Depends(dep_current_user) ensures the request is authenticated

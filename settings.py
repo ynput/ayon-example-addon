@@ -4,6 +4,8 @@ from pydantic import Field, validator
 
 from openpype.lib.postgres import Postgres
 from openpype.settings import BaseSettingsModel, ensure_unique_names, normalize_name
+from openpype.settings.enum import folder_types_enum
+from openpype.types import ColorWithAlpha
 
 
 async def async_enum_resolver():
@@ -135,14 +137,24 @@ class ExampleSettings(BaseSettingsModel):
     **bold** , *italic* , `code`, [links](https://openpype.io)...
     """
 
+    simple_string: str = Field(
+        "default value",
+        title="Simple string",
+        description="This is a simple string",
+    )
+
+    color_with_alpha: ColorWithAlpha = Field(
+        default_factory=lambda: (0.0, 0.0, 0.0, 1.0), widget="color_with_alpha"
+    )
+
     folder_type: str = Field(
         "Asset",
         title="Folder type",
-        description="""Type of the folder the addon operates on.
-        It can be any type of folder. Refer to the project anatomy for complete list.
-        """,
-        placeholder="Placeholder of the folder type field",
+        description="Type of the folder the addon operates on",
+        placeholder="Select folder type",
+        enum_resolver=folder_types_enum,
     )
+
     textarea: str = Field(
         "",
         title="Textarea",
@@ -231,14 +243,19 @@ class ExampleSettings(BaseSettingsModel):
     )
 
     list_of_submodels: list[CompactListSubmodel] = Field(
-        default_factory=list,
+        [
+            CompactListSubmodel(name="default", int_value=42, enum=["foo", "bar"]),
+        ],
         title="A list of compact objects",
+        required_items=["default"],
     )
 
     dict_like_list: list[DictLikeSubmodel] = Field(
         default_factory=list,
         title="Dict-like list",
     )
+
+    #    error: str =  Field(verybadfield)
 
     @validator("list_of_submodels", "dict_like_list")
     def ensure_unique_names(cls, value):
