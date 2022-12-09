@@ -44,6 +44,12 @@ class ExampleAddon(BaseServerAddon):
         all_addons: list[str] = [name for name, _ in AddonLibrary.items()]
         logging.info(f"All addons as example addons sees them: {all_addons}")
 
+        # If the addon makes a change in server configuration,
+        # e.g. adding a new attribute, you may trigger a server
+        # restart by calling self.restart_server()
+        # Use it with caution and only when necessary!
+        # You don't want to restart the server every time the addon is loaded.
+
         # self.request_server_restart()
 
 
@@ -85,7 +91,7 @@ class ExampleAddon(BaseServerAddon):
         # ensure_read_access method raises ForbiddenException, when the user
         # does not have rights to view the folder.
 
-        folder.ensure_read_access(user)
+        await folder.ensure_read_access(user)
 
         # FolderEntity.as_user returns the folder (similarly to folder.payload)
         # but it respects the user access level (so it may hide certain attributes)
