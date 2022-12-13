@@ -5,7 +5,14 @@ from pydantic import Field, validator
 from openpype.lib.postgres import Postgres
 from openpype.settings import BaseSettingsModel, ensure_unique_names, normalize_name
 from openpype.settings.enum import folder_types_enum
-from openpype.types import ColorWithAlpha
+from openpype.types import (
+    ColorRGB_hex,
+    ColorRGBA_hex,
+    ColorRGB_float,
+    ColorRGBA_float,
+    ColorRGB_uint8,
+    ColorRGBA_uint8,
+)
 
 
 async def async_enum_resolver():
@@ -20,6 +27,35 @@ def enum_resolver():
     displayed in the UI.
     """
     return [{"value": f"value{i}", "label": f"Label {i}"} for i in range(10)]
+
+
+class Colors(BaseSettingsModel):
+    """Default is blue"""
+
+    rgb_hex: ColorRGB_hex = Field(
+        "#0000ff",
+        title="RGB Hex",
+    )
+    rgba_hex: ColorRGBA_hex = Field(
+        "#0000ff",
+        title="RGBA Hex",
+    )
+    rgb_float: ColorRGB_float = Field(
+        (0, 0, 1),
+        title="RGB Float",
+    )
+    rgba_float: ColorRGBA_float = Field(
+        (0, 0, 1, 1),
+        title="RGBA Float",
+    )
+    rgb_uint8: ColorRGB_uint8 = Field(
+        (0, 0, 255),
+        title="RGB Uint8",
+    )
+    rgba_uint8: ColorRGBA_uint8 = Field(
+        (0, 0, 255, 0),
+        title="RGBA Uint8",
+    )
 
 
 class ConditionalModel1(BaseSettingsModel):
@@ -143,10 +179,6 @@ class ExampleSettings(BaseSettingsModel):
         description="This is a simple string",
     )
 
-    color_with_alpha: ColorWithAlpha = Field(
-        default_factory=lambda: (0.0, 0.0, 0.0, 1.0), widget="color_with_alpha"
-    )
-
     folder_type: str = Field(
         "Asset",
         title="Folder type",
@@ -229,6 +261,11 @@ class ExampleSettings(BaseSettingsModel):
         section="List",
     )
 
+    colors: Colors = Field(
+        default_factory=Colors,
+        title="Colors",
+    )
+
     # Settings models can be nested
 
     nested_settings: NestedSettings = Field(
@@ -262,3 +299,8 @@ class ExampleSettings(BaseSettingsModel):
         """Ensure name fields within the lists have unique names."""
         ensure_unique_names(value)
         return value
+
+# class ExampleSettings(BaseSettingsModel):
+#     """Test addon settings"""
+#
+#     colors: Colors = Field(default_factory=Colors, title="Colors")
