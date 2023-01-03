@@ -3,11 +3,11 @@ from typing import Any, Type
 from fastapi import Depends
 from nxtools import logging
 
-from openpype.addons import BaseServerAddon, AddonLibrary
-from openpype.api.dependencies import dep_current_user, dep_project_name
-from openpype.entities import FolderEntity, UserEntity
-from openpype.exceptions import NotFoundException
-from openpype.lib.postgres import Postgres
+from ayon_server.addons import BaseServerAddon, AddonLibrary
+from ayon_server.api.dependencies import dep_current_user, dep_project_name
+from ayon_server.entities import FolderEntity, UserEntity
+from ayon_server.exceptions import NotFoundException
+from ayon_server.lib.postgres import Postgres
 
 from .settings import ExampleSettings
 

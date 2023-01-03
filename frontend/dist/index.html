@@ -100,7 +100,7 @@
         document.querySelector('#addon-name').innerHTML = `${addonName} ${addonVersion}`
 
         let selectionList = ""
-        for (const folderId of context.focusedFolders){
+        for (const folderId of context.focused.folders){
           selectionList += `<li>${folderId}</li>\n`
         }
         document.querySelector('#selection').innerHTML = selectionList

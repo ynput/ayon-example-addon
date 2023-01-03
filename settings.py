@@ -2,10 +2,10 @@ from typing import Literal
 
 from pydantic import Field, validator
 
-from openpype.lib.postgres import Postgres
-from openpype.settings import BaseSettingsModel, ensure_unique_names, normalize_name
-from openpype.settings.enum import folder_types_enum
-from openpype.types import (
+from ayon_server.lib.postgres import Postgres
+from ayon_server.settings import BaseSettingsModel, ensure_unique_names, normalize_name
+from ayon_server.settings.enum import folder_types_enum
+from ayon_server.types import (
     ColorRGB_hex,
     ColorRGBA_hex,
     ColorRGB_float,
