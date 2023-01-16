@@ -203,19 +203,42 @@ class ExampleSettings(BaseSettingsModel):
         placeholder="Placeholder of the number field",
     )
 
-    # Scoped fields are shown only in specific context (studio/project)
+    # Scoped fields are shown only in specific contexts (studio/project/local)
+    # By default, they are shown in studio and projects contexts
+
+    all_scopes_setting: str = Field(
+        "You see me all the time",
+        title="All scopes",
+        scope=["studio", "project", "local"],
+        description="This setting is shown in all contexts",
+        section="Scoped fields",
+    )
+
+    hidden_setting: str = Field(
+        "you can't see me",
+        title="Hidden setting",
+        scope=[],
+        description="This setting is hidden in all contexts",
+    )
 
     studio_setting: str = Field(
         "",
         title="Studio setting",
-        scope="studio",
+        scope=["studio"],
         description="This setting is only visible in studio scope",
+    )
+
+    local_setting: str = Field(
+        "",
+        title="Local setting",
+        scope=["local"],
+        description="This setting is only visible in the local scope",
     )
 
     project_setting: str = Field(
         "",
         title="Project setting",
-        scope="project",
+        scope=["project"],
         description="This setting is only visible in project scope",
     )
 
@@ -299,6 +322,7 @@ class ExampleSettings(BaseSettingsModel):
         """Ensure name fields within the lists have unique names."""
         ensure_unique_names(value)
         return value
+
 
 # class ExampleSettings(BaseSettingsModel):
 #     """Test addon settings"""
