@@ -10,6 +10,7 @@ from ayon_server.exceptions import NotFoundException
 from ayon_server.lib.postgres import Postgres
 
 from .settings import ExampleSettings
+from .site_settings import ExampleSiteSettings
 
 
 class ExampleAddon(BaseServerAddon):
@@ -17,6 +18,7 @@ class ExampleAddon(BaseServerAddon):
     title = "Example addon"
     version = "1.0.0"
     settings_model: Type[ExampleSettings] = ExampleSettings
+    site_settings_model: Type[ExampleSiteSettings] = ExampleSiteSettings
 
     # frontend_scopes defines, where the web frontend of the addon
     # should be displayed in openpype web app. Currently only "project"
@@ -51,7 +53,6 @@ class ExampleAddon(BaseServerAddon):
         # You don't want to restart the server every time the addon is loaded.
 
         # self.request_server_restart()
-
 
     # Example REST endpoint
     # Depends(dep_current_user) ensures the request is authenticated
