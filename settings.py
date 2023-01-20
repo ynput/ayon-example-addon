@@ -206,19 +206,19 @@ class ExampleSettings(BaseSettingsModel):
     # Scoped fields are shown only in specific contexts (studio/project/local)
     # By default, they are shown in studio and projects contexts
 
-    all_scopes_setting: str = Field(
-        "You see me all the time",
-        title="All scopes",
-        scope=["studio", "project", "local"],
-        description="This setting is shown in all contexts",
-        section="Scoped fields",
-    )
-
     hidden_setting: str = Field(
         "you can't see me",
         title="Hidden setting",
         scope=[],
         description="This setting is hidden in all contexts",
+    )
+
+    all_scopes_setting: str = Field(
+        "You see me all the time",
+        title="All scopes",
+        scope=["studio", "project", "site"],
+        description="This setting is shown in all contexts",
+        section="Scoped fields",
     )
 
     studio_setting: str = Field(
@@ -228,18 +228,18 @@ class ExampleSettings(BaseSettingsModel):
         description="This setting is only visible in studio scope",
     )
 
-    local_setting: str = Field(
-        "",
-        title="Local setting",
-        scope=["local"],
-        description="This setting is only visible in the local scope",
-    )
-
     project_setting: str = Field(
         "",
         title="Project setting",
         scope=["project"],
         description="This setting is only visible in project scope",
+    )
+
+    project_site_setting: str = Field(
+        "",
+        title="Project site setting",
+        scope=["site"],
+        description="This setting is only visible in the local scope",
     )
 
     # Simple enumerators can be defined using Literal type
