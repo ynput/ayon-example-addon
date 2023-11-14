@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, TYPE_CHECKING
 
 from pydantic import Field, validator
 
@@ -14,6 +14,9 @@ from ayon_server.types import (
     ColorRGBA_uint8,
 )
 
+if TYPE_CHECKING:
+    from ayon_server.addons import BaseServerAddon
+
 
 async def async_enum_resolver():
     """Return a list of project names."""
@@ -27,6 +30,24 @@ def enum_resolver():
     displayed in the UI.
     """
     return [{"value": f"value{i}", "label": f"Label {i}"} for i in range(10)]
+
+
+async def recursive_enum_resolver(
+    addon: "BaseServerAddon",
+    project_name: str | None = None,
+    settings_variant: str = "production",
+) -> list[str]:
+    if addon is None:
+        return []
+
+    if project_name:
+        settings = await addon.get_project_settings(
+            project_name=project_name, variant=settings_variant
+        )
+    else:
+        settings = await addon.get_studio_settings(variant=settings_variant)
+
+    return settings.list_of_strings
 
 
 class Colors(BaseSettingsModel):
@@ -124,7 +145,6 @@ class GroupedSettings(BaseSettingsModel):
 
 
 class CompactListSubmodel(BaseSettingsModel):
-
     # Compact layout is used, when a submodel has just a few
     # attributes, which may be displayed in a single row
 
@@ -282,6 +302,13 @@ class ExampleSettings(BaseSettingsModel):
         default_factory=list,
         title="List of strings",
         section="List",
+    )
+
+    recursive_enum: str = Field(
+        "",
+        title="Recursive enum",
+        enum_resolver=recursive_enum_resolver,
+        section="Pick a value from the list above",
     )
 
     colors: Colors = Field(

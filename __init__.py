@@ -1,13 +1,13 @@
 from typing import Any, Type
 
-from fastapi import Depends
 from nxtools import logging
 
-from ayon_server.addons import BaseServerAddon, AddonLibrary
-from ayon_server.api.dependencies import dep_current_user, dep_project_name
-from ayon_server.entities import FolderEntity, UserEntity
+from ayon_server.addons import BaseServerAddon
+from ayon_server.api.dependencies import CurrentUser, ProjectName
+from ayon_server.entities import FolderEntity
 from ayon_server.exceptions import NotFoundException
 from ayon_server.lib.postgres import Postgres
+
 
 from .settings import ExampleSettings
 from .site_settings import ExampleSiteSettings
@@ -41,10 +41,7 @@ class ExampleAddon(BaseServerAddon):
         )
 
     async def setup(self):
-        """Setup method is called after the addon is registered"""
-        logging.info("Example addon is ready to use")
-        all_addons: list[str] = [name for name, _ in AddonLibrary.items()]
-        logging.info(f"All addons as example addons sees them: {all_addons}")
+        pass
 
         # If the addon makes a change in server configuration,
         # e.g. adding a new attribute, you may trigger a server
@@ -59,8 +56,8 @@ class ExampleAddon(BaseServerAddon):
 
     async def get_random_folder(
         self,
-        user: UserEntity = Depends(dep_current_user),
-        project_name: str = Depends(dep_project_name),
+        user: CurrentUser,
+        project_name: ProjectName,
     ):
         """Return a random folder from the database"""
 
