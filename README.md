@@ -1,9 +1,6 @@
 Example addon
 =============
 
-* New directory structure - the good one *
-
-
 Premises
 --------
 
