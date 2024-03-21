@@ -166,10 +166,10 @@ class CompactListSubmodel(BaseSettingsModel):
 class DictLikeSubmodel(BaseSettingsModel):
     _layout = "expanded"
 
-    name: str = Field(..., title="Name")
-    value1: str = Field("", title="Value 1")
-    value2: str = Field("", title="Value 2")
-    value3: str = Field("", title="Value 3")
+    name: str = Field(..., title="Name", scope=["studio", "project", "site"])
+    value1: str = Field("", title="Value 1", scope=["studio", "project", "site"])
+    value2: str = Field("", title="Value 2", scope=["studio", "project", "site"])
+    value3: str = Field("", title="Value 3", scope=["studio", "project", "site"])
     value4: str = Field("", title="Value 4")
 
     @validator("name")
@@ -260,6 +260,12 @@ class ExampleSettings(BaseSettingsModel):
         title="Project site setting",
         scope=["site"],
         description="This setting is only visible in the local scope",
+    )
+
+    all_scopes_list_of_submodels: list[DictLikeSubmodel] = Field(
+        default_factory=list,
+        title="Dict-like list",
+        scope=["studio", "project", "site"],
     )
 
     # Simple enumerators can be defined using Literal type
