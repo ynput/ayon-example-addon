@@ -3,7 +3,7 @@ title = "Example"
 version = "2.0.1"
 
 services = {
-    "SplinesReticulator": {"image": "bfirsh/reticulate-splines"},
+    "MyCoolService": {"image": "ynput/my-cool-service"},
 }
 
 plugin_for = ["ayon_server"]
