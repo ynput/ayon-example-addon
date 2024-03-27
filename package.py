@@ -3,7 +3,7 @@ title = "Example"
 version = "2.0.1"
 
 services = {
-    "MyCoolService": {"image": "ynput/my-cool-service"},
+    "ExampleService": {"image": "ynput/ayon-example-service"},
 }
 
 plugin_for = ["ayon_server"]

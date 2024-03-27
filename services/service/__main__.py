@@ -5,7 +5,7 @@ import time
 import ayon_api
 
 
-SENDER = f"example-processor-{socket.gethostname()}"
+SENDER = f"example-service-{socket.gethostname()}"
 
 
 def process_event():
