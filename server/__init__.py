@@ -24,6 +24,7 @@ class ExampleAddon(BaseServerAddon):
     # fully functional and will be changed in the future.
 
     frontend_scopes: dict[str, dict[str, str]] = {"project": {"sidebar": "hierarchy"}}
+    addon_type = "server"
 
     # intitalize method is called during the addon initialization
     # You can use it to register its custom REST endpoints
