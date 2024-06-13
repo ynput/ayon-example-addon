@@ -4,7 +4,7 @@ from pydantic import Field, validator
 
 from ayon_server.lib.postgres import Postgres
 from ayon_server.settings import BaseSettingsModel, ensure_unique_names, normalize_name
-from ayon_server.settings.enum import folder_types_enum
+from ayon_server.settings.enum import folder_types_enum, anatomy_presets_enum, addon_all_app_host_names_enum
 from ayon_server.types import (
     ColorRGB_hex,
     ColorRGBA_hex,
@@ -103,6 +103,23 @@ model_switcher_enum = [
     {"value": "model3", "label": "Something completely different"},
 ]
 
+class CompactListSubmodel(BaseSettingsModel):
+    # Compact layout is used, when a submodel has just a few
+    # attributes, which may be displayed in a single row
+
+    _layout = "compact"
+    name: str = Field(..., title="Name")
+    int_value: int = Field(..., title="Integer")
+    enum: list[str] = Field(
+        default_factory=list,
+        title="Enum",
+        enum_resolver=lambda: ["foo", "bar", "baz"],
+    )
+
+    @validator("name")
+    def validate_name(cls, value):
+        """Ensure name does not contain weird characters"""
+        return normalize_name(value)
 
 class NestedSettings(BaseSettingsModel):
     """Nested settings without grouping
@@ -132,6 +149,13 @@ class NestedSettings(BaseSettingsModel):
     model2: ConditionalModel2 = Field(default_factory=ConditionalModel2)
     model3: ConditionalModel3 = Field(default_factory=ConditionalModel3)
 
+    nested_list_of_submodels: list[CompactListSubmodel] = Field(
+        [
+            CompactListSubmodel(name="default", int_value=42, enum=["foo", "bar"]),
+        ],
+        title="A list of compact objects",
+        required_items=["default"],
+    )
 
 class GroupedSettings(BaseSettingsModel):
     _isGroup = True
@@ -144,23 +168,6 @@ class GroupedSettings(BaseSettingsModel):
     )
 
 
-class CompactListSubmodel(BaseSettingsModel):
-    # Compact layout is used, when a submodel has just a few
-    # attributes, which may be displayed in a single row
-
-    _layout = "compact"
-    name: str = Field(..., title="Name")
-    int_value: int = Field(..., title="Integer")
-    enum: list[str] = Field(
-        default_factory=list,
-        title="Enum",
-        enum_resolver=lambda: ["foo", "bar", "baz"],
-    )
-
-    @validator("name")
-    def validate_name(cls, value):
-        """Ensure name does not contain weird characters"""
-        return normalize_name(value)
 
 
 class DictLikeSubmodel(BaseSettingsModel):
@@ -205,6 +212,13 @@ class ExampleSettings(BaseSettingsModel):
         description="Type of the folder the addon operates on",
         placeholder="Select folder type",
         enum_resolver=folder_types_enum,
+    )
+
+    anatomy_preset: str = Field(
+        "__primary__",
+        title="Anatomy preset",
+        description="Anatomy preset to use",
+        enum_resolver=anatomy_presets_enum,
     )
 
     textarea: str = Field(
@@ -295,6 +309,13 @@ class ExampleSettings(BaseSettingsModel):
         title="Multiselect",
         enum_resolver=lambda: ["foo", "bar", "ba"],
     )
+
+    app_host_names: list[str] = Field(
+        default_factory=list,
+        title="App host names",
+        enum_resolver=addon_all_app_host_names_enum,
+    )
+
     # Enumerators can be defined using a list of dicts, where
     # each dict has "value" and "label" keys
 
