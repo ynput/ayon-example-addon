@@ -5,6 +5,7 @@ from nxtools import logging
 from ayon_server.addons import BaseServerAddon
 from ayon_server.api.dependencies import CurrentUser, ProjectName
 from ayon_server.entities import FolderEntity
+from ayon_server.events import EventStream, EventModel
 from ayon_server.exceptions import NotFoundException
 from ayon_server.lib.postgres import Postgres
 
@@ -24,6 +25,7 @@ class ExampleAddon(BaseServerAddon):
     # fully functional and will be changed in the future.
 
     frontend_scopes: dict[str, dict[str, str]] = {"project": {"sidebar": "hierarchy"}}
+    addon_type = "server"
 
     # intitalize method is called during the addon initialization
     # You can use it to register its custom REST endpoints
@@ -35,6 +37,8 @@ class ExampleAddon(BaseServerAddon):
             self.get_random_folder,
             method="GET",
         )
+
+        EventStream.subscribe("entity.task.status_changed", self.on_task_status_changed)
 
     async def setup(self):
         pass
@@ -90,3 +94,38 @@ class ExampleAddon(BaseServerAddon):
         # FolderEntity.as_user returns the folder (similarly to folder.payload)
         # but it respects the user access level (so it may hide certain attributes)
         return folder.as_user(user)
+
+    #
+    # Event handlers
+    #
+
+    async def get_cached_setting(self) -> str:
+        """
+        We use this setting in a event handler so it is a good idea
+        to cache it for better performance.
+        """
+        if not hasattr(self, "_cached_setting") or self._cached_setting is None:
+            studio_settings = await self.get_studio_settings()
+            self._cached_setting = studio_settings.grouped_settings.favorite_color
+        return self._cached_setting
+
+    async def on_settings_changed(
+        self,
+        old_settings: ExampleSettings,
+        new_settings: ExampleSettings,
+        **kwargs,
+    ) -> None:
+        """
+        This method is called when the settings are changed.
+        We update the cached setting here.
+        """
+        new_favorite_color = new_settings.grouped_settings.favorite_color
+        logging.debug(
+            f"Example addon settings changed. New favorite color is {new_favorite_color}"
+        )
+        self._cached_setting = new_favorite_color
+
+    async def on_task_status_changed(self, event: EventModel):
+        favorite_color = await self.get_cached_setting()
+        logging.debug(f"Example addon says, that {event.description}")
+        logging.debug(f"Admin's favorite color is {favorite_color}")
