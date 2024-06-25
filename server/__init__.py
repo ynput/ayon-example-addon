@@ -153,7 +153,7 @@ class ExampleAddon(BaseServerAddon):
             folder_id = context.entity_ids[0]
 
             f = await FolderEntity.load(context.project_name, folder_id)
-            return await executor.get_void_action_response(message=f"Action performed on {f.name}")
+            return await executor.get_server_action_response(message=f"Action performed on {f.name}")
 
 
         elif executor.identifier == "example-task-action":
