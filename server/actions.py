@@ -80,7 +80,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Launch Maya",
         category="application",
         order=100,
-        icon="{addon_url}/public/icons/houdini.png",
+        icon="{addon_url}/public/icons/maya.png",
 
         entity_type="task",
         entity_subtypes=["FX", "Modeling", "Lighting", "Animation", "Rigging", "Lookdev"],
