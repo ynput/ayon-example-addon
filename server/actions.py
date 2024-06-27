@@ -17,6 +17,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Folder Do Stuff",
         category="server",
         order=100,
+        icon={"type": "material-symbols", "name": "folder"},
 
         entity_type="folder",
         entity_subtypes=None,
@@ -27,6 +28,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Delete folder",
         category="admin",
         order=100,
+        icon={"type": "material-symbols", "name": "delete"},
 
         entity_type="folder",
         entity_subtypes=None,
@@ -37,6 +39,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Task Action",
         category="server",
         order=100,
+        icon={"type": "material-symbols", "name": "task"},
 
         entity_type="task",
         entity_subtypes=None,
@@ -47,7 +50,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Launch Nuke",
         category="application",
         order=100,
-        icon="{addon_url}/public/icons/nuke.png",
+        icon={"type": "url", "url": "{addon_url}/public/icons/nuke.png"},
 
         entity_type="task",
         entity_subtypes=["Compositing", "Roto", "Matchmove"],
@@ -58,7 +61,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Launch Photoshop",
         category="application",
         order=100,
-        icon="{addon_url}/public/icons/photoshop.png",
+        icon={"type": "url", "url": "{addon_url}/public/icons/photoshop.png"},
 
         entity_type="task",
         entity_subtypes=["Compositing", "Texture"],
@@ -69,7 +72,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Launch Houdini",
         category="application",
         order=100,
-        icon="{addon_url}/public/icons/houdini.png",
+        icon={"type": "url", "url": "{addon_url}/public/icons/houdini.png"},
 
         entity_type="task",
         entity_subtypes=["FX", "Modeling"],
@@ -80,7 +83,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         label="Launch Maya",
         category="application",
         order=100,
-        icon="{addon_url}/public/icons/maya.png",
+        icon={"type": "url", "url": "{addon_url}/public/icons/maya.png"},
 
         entity_type="task",
         entity_subtypes=["FX", "Modeling", "Lighting", "Animation", "Rigging", "Lookdev"],
