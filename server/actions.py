@@ -50,7 +50,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         icon="{addon_url}/public/icons/nuke.png",
 
         entity_type="task",
-        entity_subtypes=["compositing", "roto", "matchmove"],
+        entity_subtypes=["Compositing", "Roto", "Matchmove"],
         allow_multiselection=True,
     ),
     SimpleActionManifest(
@@ -61,7 +61,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         icon="{addon_url}/public/icons/photoshop.png",
 
         entity_type="task",
-        entity_subtypes=["compositing", "texture"],
+        entity_subtypes=["Compositing", "Texture"],
         allow_multiselection=True,
     ),
     SimpleActionManifest(
@@ -72,7 +72,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         icon="{addon_url}/public/icons/houdini.png",
 
         entity_type="task",
-        entity_subtypes=["fx", "modeling"],
+        entity_subtypes=["FX", "Modeling"],
         allow_multiselection=True,
     ),
     SimpleActionManifest(
@@ -83,7 +83,7 @@ EXAMPLE_SIMPLE_ACTIONS = [
         icon="{addon_url}/public/icons/houdini.png",
 
         entity_type="task",
-        entity_subtypes=["fx", "modeling", "lighting", "animation", "rigging", "lookdev"],
+        entity_subtypes=["FX", "Modeling", "Lighting", "Animation", "Rigging", "Lookdev"],
         allow_multiselection=False,
     )
 ]
