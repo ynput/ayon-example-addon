@@ -138,7 +138,11 @@ class ExampleAddon(BaseServerAddon):
     # Browser actions
     #
 
-    async def get_simple_actions(self) -> list[SimpleActionManifest]:
+    async def get_simple_actions(
+        self,
+        project_name: str | None = None,
+        variant: str = "production",
+    ) -> list[SimpleActionManifest]:
         """Return a list of simple actions provided by the addon"""
         return EXAMPLE_SIMPLE_ACTIONS
 
@@ -153,8 +157,9 @@ class ExampleAddon(BaseServerAddon):
             folder_id = context.entity_ids[0]
 
             f = await FolderEntity.load(context.project_name, folder_id)
-            return await executor.get_server_action_response(message=f"Action performed on {f.name}")
-
+            return await executor.get_server_action_response(
+                message=f"Action performed on {f.name}"
+            )
 
         elif executor.identifier == "example-task-action":
             return await executor.get_launcher_action_response(args=["blabla"])
