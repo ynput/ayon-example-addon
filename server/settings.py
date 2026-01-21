@@ -49,6 +49,9 @@ async def recursive_enum_resolver(
     if addon is None:
         return []
 
+    print("Settings variant:", settings_variant)
+    print("Project name:", project_name)
+
     if project_name:
         settings = await addon.get_project_settings(
             project_name=project_name, variant=settings_variant

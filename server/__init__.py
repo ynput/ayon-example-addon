@@ -8,14 +8,18 @@ from ayon_server.actions import (
 from ayon_server.addons import BaseServerAddon
 from ayon_server.api.dependencies import CurrentUser, ProjectName
 from ayon_server.entities import FolderEntity
+from ayon_server.exceptions import AyonException
 from ayon_server.events import EventModel, EventStream
 from ayon_server.exceptions import NotFoundException, NotImplementedException
 from ayon_server.helpers.get_entity_class import get_entity_class
+from ayon_server.logging import logger
 from ayon_server.lib.postgres import Postgres
 from nxtools import logging
+from ayon_server.forms import SimpleForm
 
-from .actions import EXAMPLE_SIMPLE_ACTIONS
+from .actions import EXAMPLE_SIMPLE_ACTIONS, handle_file_action, handle_list_action
 from .settings import ExampleSettings
+
 from .site_settings import ExampleSiteSettings
 
 
@@ -52,7 +56,8 @@ class ExampleAddon(BaseServerAddon):
             method="GET",
         )
 
-        EventStream.subscribe("entity.task.status_changed", self.on_task_status_changed)
+    def get_private_dir(self) -> str:
+        return "/storage/example_bordel"
 
     async def setup(self):
         pass
@@ -155,7 +160,7 @@ class ExampleAddon(BaseServerAddon):
         """Return a list of simple actions provided by the addon"""
 
         _ = project_name  # Unused
-        _ = variant # Unused
+        _ = variant  # Unused
         return EXAMPLE_SIMPLE_ACTIONS
 
     async def execute_action(
@@ -163,17 +168,23 @@ class ExampleAddon(BaseServerAddon):
         executor: ActionExecutor,
     ) -> ExecuteResponseModel:
         """Execute an action provided by the addon"""
+        
+        if executor.identifier == "example-file-action":
+            return await self.handle_file_action(executor)
+
+        if executor.identifier.startswith("example-list-action"):
+            return await handle_list_action(executor)
 
         if executor.identifier.startswith("example-"):
             context = executor.context
             entity_type = context.entity_type
             entity_id = context.entity_ids[0]
-            entity_class = get_entity_class(entity_type)
 
+            entity_class = get_entity_class(entity_type)
             entity = await entity_class.load(context.project_name, entity_id)
 
-            return await executor.get_server_action_response(
-                message=f"{executor.identifier} performed on {entity_type} {entity.name}"
+            return await executor.get_simple_response(
+                message=f"Example action executed on {entity.type} {entity.path}",
             )
 
         elif executor.identifier.startswith("launch-"):
