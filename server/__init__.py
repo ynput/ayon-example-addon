@@ -170,7 +170,7 @@ class ExampleAddon(BaseServerAddon):
         """Execute an action provided by the addon"""
         
         if executor.identifier == "example-file-action":
-            return await self.handle_file_action(executor)
+            return await handle_file_action(executor)
 
         if executor.identifier.startswith("example-list-action"):
             return await handle_list_action(executor)
