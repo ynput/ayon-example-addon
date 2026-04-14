@@ -155,7 +155,7 @@ class NestedSettings(BaseSettingsModel):
         title="Model switcher",
         description="Switch between two models",
         enum_resolver=lambda: model_switcher_enum,
-        conditionalEnum=True,
+        conditional_enum=True,
         section="Pseudo-dynamic models",
     )
 
