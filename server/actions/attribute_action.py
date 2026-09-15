@@ -52,8 +52,8 @@ async def handle_attribute_action(executor: ActionExecutor) -> ExecuteResponseMo
         form.select(
             "value",
             label="Value",
-            enumResolver="attrib",
-            enumResolverParams={
+            enum_resolver="attrib",
+            enum_resolver_params={
                 "project_name": context.project_name,
                 "name": "{{attribute}}",
             },
@@ -64,7 +64,7 @@ async def handle_attribute_action(executor: ActionExecutor) -> ExecuteResponseMo
                             QueryCondition(key="attribute", operator="isnull"),
                         ]
                     ),
-                    "set": {"readOnly": True, "value": None},
+                    "set": {"hidden": True, "value": None},
                 }
             ],
         )
