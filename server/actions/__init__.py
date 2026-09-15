@@ -1,15 +1,28 @@
 __all__ = [
     "EXAMPLE_SIMPLE_ACTIONS",
+    "handle_attribute_action",
     "handle_file_action",
     "handle_list_action",
 ]
 
 from ayon_server.actions import SimpleActionManifest
+from .attribute_action import handle_attribute_action
 from .file_action import handle_file_action
 from .list_action import handle_list_action
 
 
 EXAMPLE_SIMPLE_ACTIONS = [
+
+    SimpleActionManifest(
+        identifier="example-attribute-action",
+        label="Set attribute value",
+        category="server",
+        order=100,
+        icon={"type": "material-symbols", "name": "tune"},
+        entity_type="folder",
+        entity_subtypes=None,
+        allow_multiselection=False,
+    ),
 
     SimpleActionManifest(
         identifier="example-file-action",
