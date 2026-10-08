@@ -28,8 +28,8 @@ from .site_settings import ExampleSiteSettings
 
 
 class ExampleAddon(BaseServerAddon):
-    settings_model: Type[ExampleSettings] = ExampleSettings
-    site_settings_model: Type[ExampleSiteSettings] = ExampleSiteSettings
+    settings_model: type[ExampleSettings] = ExampleSettings
+    site_settings_model: type[ExampleSiteSettings] = ExampleSiteSettings
 
     # frontend_scopes defines, where the web frontend of the addon
     # should be displayed in openpype web app.
@@ -172,7 +172,7 @@ class ExampleAddon(BaseServerAddon):
         executor: ActionExecutor,
     ) -> ExecuteResponseModel:
         """Execute an action provided by the addon"""
-        
+
         if executor.identifier == "example-file-action":
             return await handle_file_action(executor)
 
@@ -194,7 +194,7 @@ class ExampleAddon(BaseServerAddon):
                 message=f"Example action executed on {entity.type} {entity.path}",
             )
 
-        elif executor.identifier.startswith("launch-"):
+        if executor.identifier.startswith("launch-"):
             return await executor.get_launcher_action_response(args=["i_wont_work"])
 
         raise NotImplementedException(f"Not implemented action: {executor.identifier}")

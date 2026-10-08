@@ -6,16 +6,27 @@ __all__ = [
 ]
 
 from ayon_server.actions import SimpleActionManifest
+
 from .attribute_action import handle_attribute_action
 from .file_action import handle_file_action
 from .list_action import handle_list_action
-
 
 EXAMPLE_SIMPLE_ACTIONS = [
 
     SimpleActionManifest(
         identifier="example-attribute-action",
         label="Set attribute value",
+        category="server",
+        order=100,
+        icon={"type": "material-symbols", "name": "tune"},
+        entity_type="folder",
+        entity_subtypes=None,
+        allow_multiselection=False,
+    ),
+
+    SimpleActionManifest(
+        identifier="example-dynamic-form-action",
+        label="Dynamic form action",
         category="server",
         order=100,
         icon={"type": "material-symbols", "name": "tune"},

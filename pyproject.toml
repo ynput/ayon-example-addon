@@ -1,0 +1,77 @@
+[project]
+name = "ayon-example-addon"
+version = "2.1.0"
+description = "An example addon for Ayon"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "ayon-server",
+]
+
+[tool.uv.sources]
+ayon-server = { git = "https://github.com/ynput/ayon-backend" }
+
+[dependency-groups]
+dev = [
+    "mypy>=1.19.1",
+    "ruff>=0.15.7",
+]
+
+
+[tool.ruff]
+fix = true
+line-length = 88
+exclude = [
+  "tests",
+]
+
+
+[tool.ruff.format]
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+
+ignore = [
+  "BLE",     # blind exceptions
+  "COM812",  # messes with formatter
+  "D",       # docstrings. Naaah.
+  "EM",      # String literals in exception messages (why not?)
+  "FIX002",  # TODOs
+  "ISC001",  # Incompatible with formatting
+  "PLR2004", # Magic numbers
+  "PTH",     # path-like objects
+  "S101",    # Asserts make mypy happy
+  "S104",    # Bind to all interfaces (We need this)
+  "S110",    # except: pass 
+  "S608",    # sql injections. let's wait for template strings
+  "SIM105",  # contextlib.suppress is ugly
+  "TD002",   # Author name in TODOs
+  "TD003",   # Issue link in TODOs
+  "TRY003",  # Avoid specicying long messages outside of exceptions
+  "TRY301",  
+  "CPY001",  # Copyright notice
+  "PLR0913", # Too many arguments
+  "C901",    # Too complex
+  "PLR0912", # Too many branches
+  "PLR0915", # Too many statements
+]
+
+[tool.mypy]
+plugins = [
+  "pydantic.mypy"
+]
+
+strict = true
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_untyped_defs = true
+exclude = "tests/"
+explicit_package_bases = true
+follow_imports = "silent"
+no_implicit_reexport = true
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true

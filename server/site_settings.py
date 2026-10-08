@@ -1,6 +1,5 @@
-from pydantic import ValidationError, validator
-
 from ayon_server.settings import BaseSettingsModel, SettingsField
+from pydantic import validator
 
 
 class ExampleSiteSettings(BaseSettingsModel):
