@@ -1,9 +1,8 @@
-from logging import info
-from ayon_server.forms import SimpleForm
 from ayon_server.actions import (
     ActionExecutor,
     ExecuteResponseModel,
 )
+from ayon_server.forms import SimpleForm
 
 
 async def handle_file_action(executor: ActionExecutor) -> ExecuteResponseModel:

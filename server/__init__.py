@@ -8,24 +8,28 @@ from ayon_server.actions import (
 from ayon_server.addons import BaseServerAddon
 from ayon_server.api.dependencies import CurrentUser, ProjectName
 from ayon_server.entities import FolderEntity
-from ayon_server.exceptions import AyonException
-from ayon_server.events import EventModel, EventStream
-from ayon_server.exceptions import NotFoundException, NotImplementedException
+from ayon_server.events import EventModel
+from ayon_server.exceptions import (
+    NotFoundException,
+    NotImplementedException,
+)
 from ayon_server.helpers.get_entity_class import get_entity_class
-from ayon_server.logging import logger
 from ayon_server.lib.postgres import Postgres
 from nxtools import logging
-from ayon_server.forms import SimpleForm
 
-from .actions import EXAMPLE_SIMPLE_ACTIONS, handle_file_action, handle_list_action
+from .actions import (
+    EXAMPLE_SIMPLE_ACTIONS,
+    handle_attribute_action,
+    handle_file_action,
+    handle_list_action,
+)
 from .settings import ExampleSettings
-
 from .site_settings import ExampleSiteSettings
 
 
 class ExampleAddon(BaseServerAddon):
-    settings_model: Type[ExampleSettings] = ExampleSettings
-    site_settings_model: Type[ExampleSiteSettings] = ExampleSiteSettings
+    settings_model: type[ExampleSettings] = ExampleSettings
+    site_settings_model: type[ExampleSiteSettings] = ExampleSiteSettings
 
     # frontend_scopes defines, where the web frontend of the addon
     # should be displayed in openpype web app.
@@ -168,9 +172,12 @@ class ExampleAddon(BaseServerAddon):
         executor: ActionExecutor,
     ) -> ExecuteResponseModel:
         """Execute an action provided by the addon"""
-        
+
         if executor.identifier == "example-file-action":
             return await handle_file_action(executor)
+
+        if executor.identifier == "example-attribute-action":
+            return await handle_attribute_action(executor)
 
         if executor.identifier.startswith("example-list-action"):
             return await handle_list_action(executor)
@@ -187,7 +194,7 @@ class ExampleAddon(BaseServerAddon):
                 message=f"Example action executed on {entity.type} {entity.path}",
             )
 
-        elif executor.identifier.startswith("launch-"):
+        if executor.identifier.startswith("launch-"):
             return await executor.get_launcher_action_response(args=["i_wont_work"])
 
         raise NotImplementedException(f"Not implemented action: {executor.identifier}")

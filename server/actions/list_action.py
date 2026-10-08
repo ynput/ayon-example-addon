@@ -1,12 +1,13 @@
 import random
 
-from ayon_server.entity_lists import EntityList
-from ayon_server.forms import SimpleForm
-from ayon_server.helpers.get_entity_class import get_entity_class
 from ayon_server.actions import (
     ActionExecutor,
     ExecuteResponseModel,
 )
+from ayon_server.entity_lists import EntityList
+from ayon_server.forms import SimpleForm
+from ayon_server.helpers.get_entity_class import get_entity_class
+
 
 async def handle_list_action(executor: ActionExecutor) -> ExecuteResponseModel:
     """
@@ -26,12 +27,12 @@ async def handle_list_action(executor: ActionExecutor) -> ExecuteResponseModel:
     item = random.choice(l.items)
     item_class = get_entity_class(l.entity_type)
     entity = await item_class.load(project_name, item.entity_id)
-    
+
     info = (
         f"You have a very nice list! {l.payload.label} is the best! \n\n"
         f"I can see you have {len(l.payload.items)} items here. \n\n"
         f"Especially, I like {entity.name} \n\n"
-    ) 
+    )
 
     form = (
         SimpleForm()

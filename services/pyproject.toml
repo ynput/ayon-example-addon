@@ -1,14 +1,10 @@
-[tool.poetry]
+[project]
 name = "ayon-example-service"
 version = "2.0.0"
 description = "My cool service"
-authors = ["Martin Wacker <martin@ynput.io>"]
+requires-python = ">=3.11"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-nxtools = "^1.6"
-ayon-python-api = "1.0.1"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+dependencies = [
+  "nxtools >=1.6.0",
+  "ayon-python-api >=1.0.1"
+]

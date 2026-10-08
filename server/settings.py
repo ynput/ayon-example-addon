@@ -1,6 +1,4 @@
-from typing import Literal, TYPE_CHECKING
-
-from pydantic import validator
+from typing import TYPE_CHECKING, Literal
 
 from ayon_server.lib.postgres import Postgres
 from ayon_server.settings import (
@@ -10,18 +8,19 @@ from ayon_server.settings import (
     normalize_name,
 )
 from ayon_server.settings.enum import (
-    folder_types_enum,
-    anatomy_presets_enum,
     addon_all_app_host_names_enum,
+    anatomy_presets_enum,
+    folder_types_enum,
 )
 from ayon_server.types import (
-    ColorRGB_hex,
-    ColorRGBA_hex,
     ColorRGB_float,
-    ColorRGBA_float,
+    ColorRGB_hex,
     ColorRGB_uint8,
+    ColorRGBA_float,
+    ColorRGBA_hex,
     ColorRGBA_uint8,
 )
+from pydantic import validator
 
 if TYPE_CHECKING:
     from ayon_server.addons import BaseServerAddon
